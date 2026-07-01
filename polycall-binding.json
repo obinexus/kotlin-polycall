@@ -1,0 +1,11 @@
+{
+  "name": "kotlin-polycall",
+  "version": "1.5.0",
+  "language": "Kotlin",
+  "adapter": true,
+  "ffi": true,
+  "config": "kotlin-polycallrc",
+  "core": "../../src",
+  "license": "MIT OBINexus",
+  "author": "Nnamdi Michael Okpala"
+}
