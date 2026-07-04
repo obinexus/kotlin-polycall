@@ -1,0 +1,63 @@
+{
+  "name": "@obinexusltd/kotlin-polycall",
+  "version": "1.0.0",
+  "description": "Kotlin/JVM JNI source binding for libpolycall 1.5",
+  "main": "index.js",
+  "type": "commonjs",
+  "files": [
+    "index.js",
+    "src/",
+    "c_src/",
+    "include/",
+    "generated/",
+    "examples/",
+    "tests/",
+    "scripts/",
+    "Makefile",
+    "build.gradle.kts",
+    "settings.gradle.kts",
+    "kotlin-polycallrc",
+    "polycall-binding.json",
+    "README.md",
+    "TODO.md",
+    "LICENSE"
+  ],
+  "directories": {
+    "example": "examples",
+    "lib": "src",
+    "test": "tests"
+  },
+  "scripts": {
+    "build": "make",
+    "build:kotlin": "make kotlin-build",
+    "build:gradle": "make gradle-build",
+    "build:jni": "make jni",
+    "test": "make test && npm run verify:dry && npm run test:package",
+    "test:kotlin": "make test-kotlin",
+    "test:package": "node tests/package.test.js",
+    "verify:dry": "make verify-dry",
+    "verify": "npm test",
+    "prepack": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/obinexus/kotlin-polycall.git"
+  },
+  "keywords": [
+    "libpolycall",
+    "polycall",
+    "kotlin",
+    "jvm",
+    "jni",
+    "ffi"
+  ],
+  "author": "Nnamdi Michael Okpala <okpalan@protonmail.com>",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/obinexus/kotlin-polycall/issues"
+  },
+  "homepage": "https://github.com/obinexus/kotlin-polycall#readme"
+}

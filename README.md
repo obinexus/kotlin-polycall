@@ -1,29 +1,118 @@
-# kotlin-polycall
+# @obinexusltd/kotlin-polycall
 
-**Kotlin** binding for [libpolycall](https://github.com/obinexus/libpolycall) — an
-implemented reference adapter.
+Kotlin/JVM JNI binding for
+[libpolycall](https://github.com/obinexus/libpolycall) 1.5. The adapter maps
+Kotlin calls to the single core entry point:
 
-A thin adapter over the flat FFI boundary (`polycall_ffi.h`). It contains no
-config or runtime logic; every call forwards to the shared C core. See
-[../../docs/adapter-pattern.md](../../docs/adapter-pattern.md).
-
-## Build & run
-
-```bash
-cd ../.. && ./setup.sh          # build the shared core (build/libpolycall.*)
-cd bindings/kotlin-polycall
-kotlinc src/main/kotlin/org/obinexus/polycall/Polycall.kt -include-runtime -d polycall.jar
-java --enable-preview --enable-native-access=ALL-UNNAMED \
-  -Djava.library.path=../../build -jar polycall.jar kotlin-polycallrc
+```c
+polycall_ffi_run_config(config_path, 1)
 ```
 
-Uses the JDK 21 Foreign Function & Memory API (Project Panama), like java-polycall.
+Configuration parsing, validation, networking, and runtime policy remain in
+libpolycall. This package only marshals the configuration path across JNI and
+returns the core status unchanged.
 
-## Config
+## Install the source package
 
-Read-only config: [`kotlin-polycallrc`](kotlin-polycallrc) — the standard `*polycallrc` convention on
-the single shared schema. No per-language parser exists.
+```shell
+npm install @obinexusltd/kotlin-polycall
+```
 
-## Manifest
+The npm package publishes the complete Kotlin, JNI, and C source tree. It is a
+native source distribution rather than a JavaScript implementation. Calling
+`require('@obinexusltd/kotlin-polycall')` returns absolute paths to the packaged
+sources, headers, configuration, manifest, and build files.
 
-See [`polycall-binding.json`](polycall-binding.json).
+## Requirements
+
+- libpolycall 1.5 development library and headers
+- JDK 17 or newer
+- Kotlin 2.4 or a compatible Gradle installation
+- a C11 compiler and GNU Make
+
+## Build
+
+Build the standalone adapter archive without linking libpolycall:
+
+```shell
+make
+```
+
+Build the Kotlin classes with Gradle or the command-line compiler:
+
+```shell
+gradle build
+# or
+npm run build:kotlin
+```
+
+Build the JNI shared library by supplying the JDK location and libpolycall
+linker flags:
+
+```shell
+export JAVA_HOME=/path/to/jdk
+export POLYCALL_LDFLAGS='-L/path/to/lib -lpolycall'
+make jni
+```
+
+PowerShell uses the same variables:
+
+```powershell
+$env:JAVA_HOME = 'C:\Program Files\Java\jdk-21'
+$env:POLYCALL_LDFLAGS = '-LC:\path\to\lib -lpolycall'
+make jni
+```
+
+Place the JNI library on `java.library.path`, or pass its absolute path with
+`-Dkotlin.polycall.library=/absolute/path/to/the/library`.
+
+## API
+
+```kotlin
+import org.obinexus.polycall.Polycall
+
+val status = Polycall.runConfig("kotlin-polycallrc")
+Polycall.runConfigOrThrow("kotlin-polycallrc")
+```
+
+- `runConfig` returns the exact libpolycall status.
+- `runConfigOrThrow` raises `PolycallException` for a non-zero status.
+- Omitting the path uses `kotlin-polycallrc`.
+- `kotlin.polycall.library` selects an explicit JNI library file.
+
+See [`examples/Main.kt`](examples/Main.kt) for a runnable example.
+
+## Verification
+
+The default suite needs only a C compiler, Make, Node.js, and PowerShell on
+Windows:
+
+```shell
+npm test
+```
+
+It verifies exact path forwarding, the required validation flag, status
+propagation, thin-adapter constraints, and npm package completeness.
+
+With Kotlin and a JDK matching the native compiler architecture installed, run
+the end-to-end JNI smoke test:
+
+```shell
+npm run test:kotlin
+```
+
+## Package layout
+
+- `src/main/kotlin/` — public Kotlin API
+- `c_src/` — C adapter and JNI bridge
+- `include/` — adapter C header
+- `generated/polycall/` — minimal generated core FFI declaration
+- `examples/` — Kotlin example and sample configuration
+- `tests/` — native mock, Kotlin smoke test, and npm package test
+
+## Author and license
+
+Copyright © 2026 Nnamdi Michael Okpala
+<okpalan@protonmail.com>.
+
+Released under the [MIT License](LICENSE).

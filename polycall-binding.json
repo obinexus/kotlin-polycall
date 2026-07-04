@@ -1,11 +1,13 @@
 {
   "name": "kotlin-polycall",
+  "package": "@obinexusltd/kotlin-polycall",
   "version": "1.5.0",
   "language": "Kotlin",
   "adapter": true,
   "ffi": true,
+  "entry_point": "polycall_ffi_run_config",
   "config": "kotlin-polycallrc",
   "core": "../../src",
-  "license": "MIT OBINexus",
+  "license": "MIT",
   "author": "Nnamdi Michael Okpala"
 }
